@@ -27,6 +27,8 @@ public class SpaceInvadersSubScene extends SubScene {
 
         root2.setBackground(new Background(image));
 
+        isHidden = true;
+
         setLayoutX(1024);
         setLayoutY(180);
     }
@@ -45,6 +47,10 @@ public class SpaceInvadersSubScene extends SubScene {
         }
 
         transition.play();
+    }
+
+    public AnchorPane getPane() {
+        return (AnchorPane) this.getRoot();
     }
 
 }

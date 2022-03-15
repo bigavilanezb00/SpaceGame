@@ -31,7 +31,12 @@ public class ViewManage {
     private SpaceInvadersSubScene scoreSubScene;
     private SpaceInvadersSubScene shipChooserScene;
 
+    private SpaceInvadersSubScene sceneToHide;
+
     List<SpaceInvadersButton> menuButtons;
+
+    List<ElegirNave> naveList;
+    private Nave elegirNave;
 
     public ViewManage () {
         menuButtons = new ArrayList<>();
@@ -46,6 +51,15 @@ public class ViewManage {
 
     }
 
+    private void showSubScene(SpaceInvadersSubScene subScene) {
+        if (sceneToHide != null) {
+            sceneToHide.moveSubScene();
+        }
+
+        subScene.moveSubScene();
+        sceneToHide = subScene;
+    }
+
     private void createSubScenes() {
         creditsSubScene = new SpaceInvadersSubScene();
         mainPane.getChildren().add(creditsSubScene);
@@ -58,6 +72,45 @@ public class ViewManage {
 
         shipChooserScene = new SpaceInvadersSubScene();
         mainPane.getChildren().add(shipChooserScene);
+
+        createElegirNaveSubScene();
+    }
+
+    private void createElegirNaveSubScene() {
+        shipChooserScene = new SpaceInvadersSubScene();
+        mainPane.getChildren().add(shipChooserScene);
+
+        InfoLabel chooseShipLabel = new InfoLabel("ELIGE TU NAVE");
+        chooseShipLabel.setLayoutX(110);
+        chooseShipLabel.setLayoutY(25);
+        shipChooserScene.getPane().getChildren().add(chooseShipLabel);
+        shipChooserScene.getPane().getChildren().add(createShipsToChoose());
+    }
+
+    private HBox createShipsToChoose() {
+        HBox box = new HBox();
+        box.setSpacing(20);
+        naveList = new ArrayList<>();
+        for (Nave nave : Nave.values()) {
+            ElegirNave naveAElegir = new ElegirNave(nave);
+            naveList.add(naveAElegir);
+            box.getChildren().add(naveAElegir);
+            naveAElegir.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    for (ElegirNave nave : naveList) {
+                        nave.setIsCircleChoosen(false);
+                    }
+                    naveAElegir.setIsCircleChoosen(true);
+                    elegirNave = naveAElegir.getNave();
+
+                }
+            });
+        }
+        box.setLayoutX(300 - (118*2));
+        box.setLayoutY(100);
+        return box;
+
     }
 
     public Stage getMainStage() {
@@ -87,7 +140,7 @@ public class ViewManage {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                shipChooserScene.moveSubScene();
+                showSubScene(shipChooserScene);
             }
         });
     }
@@ -99,7 +152,7 @@ public class ViewManage {
         scoresButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                scoreSubScene.moveSubScene();
+                showSubScene(scoreSubScene);
             }
         });
     }
@@ -111,7 +164,7 @@ public class ViewManage {
         helpButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                helpSubScene.moveSubScene();
+                showSubScene(helpSubScene);
             }
         });
     }
@@ -123,7 +176,7 @@ public class ViewManage {
         creditsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                creditsSubScene.moveSubScene();
+                showSubScene(creditsSubScene);
 
             }
         });
@@ -133,6 +186,13 @@ public class ViewManage {
     private void createExitButton() {
         SpaceInvadersButton exitButton = new SpaceInvadersButton("SALIR");
         addMenuButton(exitButton);
+
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.close();
+            }
+        });
     }
 
     private void createBackground() {
