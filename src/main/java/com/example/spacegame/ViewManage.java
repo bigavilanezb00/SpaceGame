@@ -113,6 +113,18 @@ public class ViewManage {
         SpaceInvadersButton startButton = new SpaceInvadersButton("EMPEZAR");
         startButton.setLayoutX(350);
         startButton.setLayoutY(300);
+
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                if (choosenShip!= null){
+                    GameViewManager gameManager = new GameViewManager();
+                    gameManager.createNewGame(mainStage, choosenShip);
+                }
+            }
+        });
+
         return startButton;
     }
 
