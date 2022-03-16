@@ -18,7 +18,7 @@ public class InfoLabel extends Label {
 
     public final static String FONT_PATH = "img/kenvector_future.ttf";
 
-    public final static String BACKGROUND_IMAGE = "file:img/yellow_button13.png";
+    public final static String BACKGROUND_IMAGE = "file:img/buttonYellow.png";
 
     public InfoLabel(String text) {
 

@@ -41,6 +41,19 @@ public class GameViewManager {
     private ImageView[] MeteorosGrises;
     Random randomPositionGenerator;
 
+    private ImageView star;
+    private SmallInfoLabel pointsLabel;
+    private ImageView[] playerLifes;
+    private int playerLife;
+    private int points;
+    private final static String GOLD_STAR_IMAGE = "file:img/star_gold.png";
+
+    private final static int STAR_RADIUS = 12;
+    private final static int SHIP_RADIUS = 27;
+    private final static int METEOR_RADIUS = 20;
+
+
+
     public GameViewManager() {
         initializaStage();
         createKeyListeners();
@@ -93,6 +106,24 @@ public class GameViewManager {
     }
 
     private void createGameElements( Ship choosenShip){
+
+        playerLife = 2;
+        star = new ImageView(GOLD_STAR_IMAGE);
+        setNewElementsPosition(star);
+        gamePane.getChildren().add(star);
+        pointsLabel = new SmallInfoLabel("PUNTOS: 00");
+        pointsLabel.setLayoutX(460);
+        pointsLabel.setLayoutY(20);
+        gamePane.getChildren().add(pointsLabel);
+        playerLifes = new ImageView[3];
+
+        for (int i = 0; i < playerLifes.length; i++) {
+            playerLifes[i] = new ImageView(choosenShip.getUrlLife());
+            playerLifes[i].setLayoutX(455 + (i * 50));
+            playerLifes[i].setLayoutY(80);
+            gamePane.getChildren().add(playerLifes[i]);
+        }
+
         MeteorosMarrones = new ImageView[3];
         for (int i = 0; i < MeteorosMarrones.length; i++){
             MeteorosMarrones[i] = new ImageView(METEORO_MARRON_IMAGE);
@@ -109,6 +140,9 @@ public class GameViewManager {
     }
 
     private void moveGameElements(){
+
+        star.setLayoutY(star.getLayoutY() + 5);
+
         for (int i = 0; i < MeteorosMarrones.length; i++){
             MeteorosMarrones[i].setLayoutY(MeteorosMarrones[i].getLayoutY()+7);
             MeteorosMarrones[i].setRotate(MeteorosMarrones[i].getRotate()+4);
@@ -119,7 +153,58 @@ public class GameViewManager {
         }
     }
 
+    private void checkIfElementsCollide() {
+        if (SHIP_RADIUS + STAR_RADIUS > calculateDistance(ship.getLayoutX() + 49, star.getLayoutX() + 15, ship.getLayoutY() + 37, star.getLayoutY() +15)){
+
+            setNewElementsPosition(star);
+
+            points++;
+            String textToSet = "PUNTOS: ";
+            if (points < 10) {
+                textToSet = textToSet + "o";
+            }
+
+            pointsLabel.setText(textToSet + points);
+        }
+        for (int i = 0; i < MeteorosMarrones.length; i++) {
+            if (METEOR_RADIUS + SHIP_RADIUS > calculateDistance(ship.getLayoutX() + 49, MeteorosMarrones[i].getLayoutX() + 20,
+                    ship.getLayoutY() + 37, MeteorosMarrones[i].getLayoutY() + 20)) {
+                removeLife();
+                setNewElementsPosition(MeteorosMarrones[i]);
+            }
+        }
+
+        for (int i = 0; i < MeteorosGrises.length; i++) {
+            if (METEOR_RADIUS + SHIP_RADIUS > calculateDistance(ship.getLayoutX() + 49, MeteorosGrises[i].getLayoutX() + 20,
+                    ship.getLayoutY() + 37, MeteorosGrises[i].getLayoutY() + 20)) {
+                removeLife();
+                setNewElementsPosition(MeteorosGrises[i]);
+            }
+        }
+    }
+
+
+
+    private void removeLife(){
+        gamePane.getChildren().remove(playerLifes[playerLife]);
+        playerLife--;
+        if (playerLife < 0){
+            gameStage.close();
+            gameTimer.stop();
+            menuStage.show();
+        }
+    }
+
+    private double calculateDistance(double x1, double x2, double y1, double y2){
+        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+
+    }
+
     private void checkIfElementsAreBehindTheShipAndRelocate(){
+
+        if (star.getLayoutY() > 1200) {
+            setNewElementsPosition(star);
+        }
 
         for (int i = 0; i < MeteorosMarrones.length; i++){
             if (MeteorosMarrones[i].getLayoutY() > 900) {
@@ -153,6 +238,7 @@ public class GameViewManager {
                 moveBackground();
                 moveGameElements();
                 checkIfElementsAreBehindTheShipAndRelocate();
+                checkIfElementsCollide();
                 moveShip();
             }
         };
