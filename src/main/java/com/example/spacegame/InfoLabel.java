@@ -16,7 +16,7 @@ import java.io.FileNotFoundException;
 
 public class InfoLabel extends Label {
 
-    public final static String FONTH_PATH = "img/kenvector_future.ttf";
+    public final static String FONT_PATH = "img/kenvector_future.ttf";
 
     public final static String BACKGROUND_IMAGE = "file:img/yellow_button13.png";
 
@@ -29,8 +29,8 @@ public class InfoLabel extends Label {
         setLabelFonth();
         setAlignment(Pos.CENTER);
 
-        BackgroundImage backgroundImage = new BackgroundImage(new Image(BACKGROUND_IMAGE, 380, 49, false, true),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(BACKGROUND_IMAGE, 380, 49, false, true), BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
 
         setBackground(new Background(backgroundImage));
     }
@@ -38,7 +38,7 @@ public class InfoLabel extends Label {
     private void setLabelFonth() {
 
         try {
-            setFont(Font.loadFont(new FileInputStream(new File(FONTH_PATH)), 23));
+            setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 23));
         } catch (FileNotFoundException e) {
             setFont(Font.loadFont("Verdana", 23));
         }

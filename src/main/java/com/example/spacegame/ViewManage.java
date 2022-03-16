@@ -1,10 +1,8 @@
 package com.example.spacegame;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,8 +33,8 @@ public class ViewManage {
 
     List<SpaceInvadersButton> menuButtons;
 
-    List<ElegirNave> naveList;
-    private Nave elegirNave;
+    List<ShipPicker> shipsList;
+    private Ship choosenShip;
 
     public ViewManage () {
         menuButtons = new ArrayList<>();
@@ -70,13 +68,10 @@ public class ViewManage {
         scoreSubScene = new SpaceInvadersSubScene();
         mainPane.getChildren().add(scoreSubScene);
 
-        shipChooserScene = new SpaceInvadersSubScene();
-        mainPane.getChildren().add(shipChooserScene);
-
-        createElegirNaveSubScene();
+        createShipChooserSubScene();
     }
 
-    private void createElegirNaveSubScene() {
+    private void createShipChooserSubScene() {
         shipChooserScene = new SpaceInvadersSubScene();
         mainPane.getChildren().add(shipChooserScene);
 
@@ -85,32 +80,40 @@ public class ViewManage {
         chooseShipLabel.setLayoutY(25);
         shipChooserScene.getPane().getChildren().add(chooseShipLabel);
         shipChooserScene.getPane().getChildren().add(createShipsToChoose());
+        shipChooserScene.getPane().getChildren().add(createButtonToStart());
     }
 
     private HBox createShipsToChoose() {
         HBox box = new HBox();
         box.setSpacing(20);
-        naveList = new ArrayList<>();
-        for (Nave nave : Nave.values()) {
-            ElegirNave naveAElegir = new ElegirNave(nave);
-            naveList.add(naveAElegir);
-            box.getChildren().add(naveAElegir);
-            naveAElegir.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        shipsList = new ArrayList<>();
+        for (Ship ship : Ship.values()) {
+            ShipPicker shipToPick = new ShipPicker(ship);
+            shipsList.add(shipToPick);
+            box.getChildren().add(shipToPick);
+            shipToPick.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
                 @Override
                 public void handle(MouseEvent event) {
-                    for (ElegirNave nave : naveList) {
-                        nave.setIsCircleChoosen(false);
+                    for (ShipPicker ship : shipsList) {
+                        ship.setIsCircleChoosen(false);
                     }
-                    naveAElegir.setIsCircleChoosen(true);
-                    elegirNave = naveAElegir.getNave();
-
+                    shipToPick.setIsCircleChoosen(true);
+                    choosenShip = shipToPick.getShip();
                 }
             });
         }
+
         box.setLayoutX(300 - (118*2));
         box.setLayoutY(100);
         return box;
+    }
 
+    private SpaceInvadersButton createButtonToStart() {
+        SpaceInvadersButton startButton = new SpaceInvadersButton("EMPEZAR");
+        startButton.setLayoutX(350);
+        startButton.setLayoutY(300);
+        return startButton;
     }
 
     public Stage getMainStage() {
